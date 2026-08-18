@@ -1,4 +1,7 @@
 # Abdul Bari's Algorithms playlist
+Kindly support Abdul Bari; He's helped countless engineers to ramp up their algo game!
+
+[Playlist Source](https://youtube.com/playlist?list=PLDN4rrl48XKpZkf03iYFl-O29szjTrs_O&si=BANU3m-emLN1aG5B)
 ## 1. Introduction to Algorithms
 ### What is an algorithm?
 - An algorithm is a step-by-step procedure for solving a computational problem.
