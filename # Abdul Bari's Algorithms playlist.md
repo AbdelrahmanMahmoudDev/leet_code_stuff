@@ -216,7 +216,7 @@ for(int i = 1; p <= n; i++)
 
     There is a very subtle detail here that bears emphasising, the reason why we didn't include the number of executions of the statement is that **we don't know.** Observe the stopping condition, we require p <= n, so we will only stop when p > n, right? Can you reliably answer when exactly p > n occurs? The answer to this, **at the algorithm analysis stage** is no.
     
-    It is important to appreeciate this idea that for algorithm analysis, we do not possess all the facts, because naturally we do not infer any implementation details other than the broad steps needed to be taken. We can make an abstract mathematical assumption, that by the time p > n, i has executed for **k** times, this means that p itself has had a series of sums up to **k**.
+    It is important to appreciate this idea that for algorithm analysis, we do not possess all the facts, because naturally we do not infer any implementation details other than the broad steps needed to be taken. We can make an abstract mathematical assumption, that by the time p > n, i has executed for **k** times, this means that p itself has had a series of sums up to **k**.
 
     Since we can express that series in a different form, we can say that **p = k(k+1) / 2**
 
@@ -232,4 +232,184 @@ for(int i = 1; p <= n; i++)
 
     This concept, of thematically stripping away the noise around the variable factor, is know as the **asymptotic form** of our relation. It has the neat property of simmering down the equation to the most important idea: **Our resulting polynomial has a degree of 0.5, a square root**.
 
-    That is why, for this algorithm, we say that the time complexity is O(ROOT(n)). Considering the mathematical significance here, we can see that this does a lot less work than an O(n) solution. 
+    That is why, for this algorithm, we say that the time complexity is **O(ROOT(n))**. Considering the mathematical significance here, we can see that this does a lot less work than an **O(n)** solution.
+## 1.5.2 Time Complexity Example #2
+### Example 1
+```
+for(i = 1; i < n; i = i * 2)
+{
+    statement;
+}
+```
+- This will not execute for **n** times, because we step by a multiple of 2. Like the previous example, we cannot surmise how many times it will execute and need to analyze the algorithm.
+
+    | iteration | i |
+    |:---------:|:-:|
+    |0|1|
+    |1|1 * 2 = 2^1|
+    |2|2 * 2 = 2^2|
+    |3|2^2 * 2 = 2^3|
+    |4|2^3 * 2 = 2^4|
+    |---|---|
+    |k|2^k|
+
+    We see a pattern emerged, that **i** is always 2 to the power of the current iteration. Our stopping condition is at **i < n**. Assume we stop at iteration **k**, at **i <= n**. At that point, **i = 2^k**:
+
+    Therefore, **2^k <= n**.
+    
+    Taking the logarithm of both sides, **k = log(n)**.
+
+    Therefore, the time complexity here is **O(Log(n))**.
+### Example 2
+```
+for(i = n; i >= 1; i = i / 2)
+{
+    statement;
+}
+```
+|iteration|i|
+|:-:|:-:|
+|0|n|
+|1|n / 2|
+|2|n / 2^2|
+|3|n / 2^3|
+|---|---|
+|k|n / 2^k|
+
+* In this situation, we notice another pattern, where at the **k**th iteration, **i < 1**.
+
+Therefore, **n / 2^k < 1**.
+
+Multiply both sides by 2^k, **n < 2^k**.
+
+Take Log2 of both sides, **Log2(n) < Log2(2^k)**.
+
+Therefore, **k > Log2(n)**.
+
+Thereforw, the time complexity here is **O(Log(n))**.
+### Example 3
+```
+for(i = 0; i * i < n; i++)
+{
+    statement;
+}
+```
+
+|iteration|i|i * i|
+|:-:|:-:|:-:|
+|0|0|0^2
+|1|1|1^2
+|2|2|2^2
+|---|---|---
+|k|k|k^2
+
+Based on the condition, assume **i * i >= n**.
+
+Therefore, **k^2 >= n**.
+
+Take the square root of both sides,**k >= ROOT(n)**.
+
+Therefore, the time complexity here is ROOT(n).
+### Example 4
+```
+for(i = 0; i < n; i++)
+{
+    statement;
+}
+
+for(j = 0; j < n; j++)
+{
+    statement;
+}
+```
+
+- To analyze a code block like this, we aggregate the results of booth loops. The first loop is **n**, the second is **n**. Therefore, the total times of execution is **2n**, this is still **O(n)**.
+### Example 5
+```
+p = 0;
+for(i = 1; i < n; i = i * 2)
+{
+    p++;
+}
+for(j = 1; j < p; j = j * 2)
+{
+    statement;
+}
+```
+
+Lets analyze this step by step, for the first loop:
+
+|iteration|i|p|
+|:-:|:-:|:-:|
+0|1|0
+1|2^1|1
+2|2^2|2
+3|2^3|3
+4|2^4|4
+k|2^k|k
+
+Assume **i >= n**.
+
+Therefore, **2^k >= n**.
+
+Apply Log2 to both sides, **Log2(2^k) >= Log2(n)**.
+
+Therefore, **k >= Log2(n)**.
+
+Therefore, the time complexity of the first loop is **O(Log(n))**.
+
+**p** is relied on in the rest of the algorithm, so we must define what it's value is after the first loop. The statement executes **Log(n)** times. **p** just starts at 0 and keeps going as long as it's allowed, meaning **p = Log(n)**.
+
+For the second loop:
+
+|iteration|j|
+|:-:|:-:|
+|0|2^0|
+|1|2^1|
+|2|2^2|
+|---|---|
+|k|2^k|
+
+Assume **j >= p**.
+
+Therefore, **2^k >= p**.
+
+Apply Log2 to both sides, **Log2(2^k) >= Log2(p)**.
+
+Therefore, **k >= Log2(p)**.
+
+So, this loop as well is **O(Log(p))**.
+
+Since **p = Log(n)**, we can add in the work done by the first loop: **O(Log(Log(n)))**.
+### Example 6
+```
+for(i = 0; i < n; i++)
+{
+    for(j = 1; j < n; j = j * 2)
+    {
+        statement;
+    }
+}
+```
+The outer loop is straight-forward, and tells us that the inner loop executes for n times, but how many times does the inner statement execute for? Lets analyze that independently.
+
+|iteration|j|
+|:-:|:-:|
+|0|2^0|
+|1|2^1|
+|---|---|
+|k|2^k|
+
+We have been through this pattern before, we can safely state that the time complexity for the inner statement is **O(Log(n))**.
+
+So we have the outer loop adding **O(n)** work to the inner statement, and the inner loop adding **O(Log(n))**. Therefore, the inner statement does **O(nLog(n))** work.
+### Summary of patters seen so far
+```
+for(i = 0; i < n; i++) -> O(n)
+for(i = 0; i < n; i+2) -> O(n)
+for(i = n; i > 1; i--) -> O(n)
+for(i = 1; i < n; i = i * 2) -> O(Log2(n))
+for(i = 1; i < n; i = i * 3) -> O(Log3(n))
+for(i = n; i > 1; i = i / 2) -> O(Log2(n))
+```
+There is a safe assumption to be made here: Loops that increment / decrement are O(n), while loops that step by multiples or divide b G  are (LogG(n)).
