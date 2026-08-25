@@ -413,3 +413,135 @@ for(i = 1; i < n; i = i * 3) -> O(Log3(n))
 for(i = n; i > 1; i = i / 2) -> O(Log2(n))
 ```
 There is a safe assumption to be made here: Loops that increment / decrement are O(n), while loops that step by multiples or divide b G  are (LogG(n)).
+## 1.5.3 Time Complexity of While and If #3
+- Today, analyzing both for loops and while loops are virtually the same. Do-while loops are different as they guarantee at least 1 execution.
+### Example 1
+```
+i = 0; -> 1
+while(i < n) -> n + 1
+{
+    statement; -> n
+    i++; -> n
+}
+```
+This is straightforward:
+- Initializing the variable i takes 1 unit
+- The while check itself takes n times where it is true, and 1 time where it is false (n + 1)
+- The inner statements execute for n times each
+
+Therefore, **f(n) = 3n + 2** and the time complexity is **O(n)**.
+### Example 2
+```
+a = 1;
+while (a < b)
+{
+    statement;
+    a = a * 2;
+}
+```
+Based on our previous discussions on for loops, you can see that this can simply be converted to one and then we'd catch on to what the complexity is, but let's analyze step-by-step.
+
+|iteration|a|
+|:-:|:-:|
+|0|2^0|
+|1|2^1|
+|2|2^2|
+|3|2^3|
+|---|---|
+|k|2^k|
+
+Assume **a >= b**,
+
+Therefore, **2^k >= b**.
+
+Taking Log2 for both sides, **Log2(2^k) >= Log2(b)**.
+
+Therefore, **k >= Log2(b)**.
+
+Therefore, the time complexity for this loop is **O(log(n))**.
+### Example 3
+```
+i = n;
+while (i > 1)
+{
+    statement;
+    i = i / 2;
+}
+```
+Based on previous discussions, this is also **O(Log(n))**.
+### Example 4
+```
+i = 1;
+k = 1;
+while (k < n)
+{
+    statement;
+    k = k + i;
+    i++;
+}
+```
+|iteration|i|k|
+|:-:|:-:|:-:|
+|0|1|1
+|1|2|1 + 1
+|2|3|1 + 1 + 2
+|3|4|1 + 1 + 2 + 3
+|4|5|1 + 1 + 2 + 3 + 4
+|---|---|---
+|m - 1|m|1 + 1 + 2 + 3 + 4 + ... + m|
+
+Assume k >= n,
+
+Therefore, **m(m+1) / 2 >= n**
+
+Multiply by 2, **m(m+1) >= 2n**
+
+Arrange into quadratic form, **m^2 + m - 2n >= 0**
+
+Recall from previous patterns, we extract the +ve root of this equation and write it in the asymptotic form, yielding a time complexity of **O(ROOT(n))**.
+### Example 5
+```
+while(m != n)
+{
+    if(m > n)
+    {
+        m = m - n;
+    }
+    else
+    {
+        n = n - m;
+    }
+}
+```
+We cannot surmise how many times this loop will execute, so we have to analyze it. We can assume here that m and n are passed as parameters to a function rather than hard-coded.
+
+First, the condition is m != n, therefore the best case scenario is for the code not to run at all; Generally, when tackling performance we look for ways to run less code. So if m == n, we can say that we have a best case of **O(1)**, since no matter the values of m and n, they will yield the same execution time.
+
+We can see that the algorithm tries to get m and n close to eachother till they're equal. This means that a short difference yields short execution counts and vice versa, this is a linear relation between the input values and execution time. **O(n)**; The worst-case is such, and we always keep the worst-case as our value.
+### Example 6
+```
+Algorithm test(n)
+{
+    if(n < 5)
+    {
+        printf("%d", n); -> 1
+    }
+    else
+    {
+        for(i = 0; i < n; i++)
+        {
+            printf("%d", i); -> n
+        }
+    }
+}
+```
+This is an example with an if statement. We can see that the else inner statement will execute for n times, while the other block will execute only 1 time. So the best case scenario is **O(1)** and the worst case is **O(n)**. Again, we usually consider the worst case when classifying the algorithm.
+## 1.6 Classes of functions
+* O(1) -> Constant
+* O(logn) -> Logarithmic
+* O(n) -> Linear
+* O(n^2) -> Quadratic
+* O(n^3) -> Cubic
+* O(2^n) -> Exponential
+## 1.7 Compare classes of functions
+1 < logn < ROOT(n) < n < nlogn < n^2 < n^3 < ... < 2^n < ... < n^n
